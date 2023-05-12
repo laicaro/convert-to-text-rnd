@@ -1,0 +1,33 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: Nodejs.
+
+Globals:
+  Function: 
+    Timeout: 300
+    MemorySize: 512
+
+Resources: 
+  PopplerLayer:
+    Type: AWS::Serverless::LayerVersion
+    Properties:
+      CompatibleRuntimes:
+        - nodejs14.x
+      ContentUri: ../Poppler.zip
+      LayerName: poppler-layer
+      LicenseInfo: MIT
+  ConverToTextRnd:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: index.handler
+      Runtime: nodejs14.x
+      CodeUri: ../
+      Layers:
+        - !Ref PopplerLayer
+      Environment:
+        Variables:
+          S3_FILE_RAW_BUCKET: 
+          S3_FILE_CONVERTED_BUCKET:        
+          SUPPORTED_FILE_EXTENSIONS: pptx,pdf
+          TEXTS_CHUNK_SIZE: 2
+          DELIMITER: 。
